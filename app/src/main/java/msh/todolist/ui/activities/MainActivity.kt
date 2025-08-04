@@ -1,4 +1,4 @@
-package msh.todolist // Asegúrate que este sea el paquete correcto
+package msh.todolist.ui.activities // Asegúrate que este sea el paquete correcto
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

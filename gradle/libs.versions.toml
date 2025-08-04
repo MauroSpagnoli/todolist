@@ -11,6 +11,7 @@ activityCompose = "1.7.0"
 composeBom = "2023.08.00"
 material = "1.10.0"
 material3 = "1.1.2"
+gsonVersion = "2.13.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -30,12 +31,11 @@ material = { group = "com.google.android.material", name = "material", version.r
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gsonVersion" }
 
 
 [plugins]
-android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
-compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+android-application = { id = "com.android.application", version = "8.1.2" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version = "2.0.21" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version = "2.0.21" }
+ksp = { id = "com.google.devtools.ksp", version = "1.5.30-1.0.0" }
