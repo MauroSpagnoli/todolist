@@ -1,3 +1,5 @@
+package msh.todolist.di
+
 import android.content.Context
 import dagger.Module
 import dagger.Provides
@@ -9,13 +11,10 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DataSourceModule {
+object ConfigModule {
 
     @Provides
     @Singleton
-    fun provideConfigDataSource(
-        @ApplicationContext context: Context
-    ): ConfigDataSource {
-        return ConfigDataSource(context)
-    }
+    fun provideConfigDataSource(@ApplicationContext context: Context): ConfigDataSource =
+        ConfigDataSource(context)
 }
