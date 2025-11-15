@@ -4,20 +4,33 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import msh.todolist.R
+import msh.todolist.ui.common.Layout
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Surface(color = MaterialTheme.colorScheme.background) {
-                Text("Hola desde Jetpack Compose + Hilt!")
-            }
+            MainScreen()
         }
+    }
+}
+
+@Composable
+fun MainScreen() {
+    Layout(
+        title = stringResource(R.string.app_name),
+        onMenuClick = { /* Lógica para abrir el menú hamburguesa */ },
+        onItemSelected = { index ->
+            // Lógica para manejar la selección del elemento del BottomBar
+        }
+    ) {
+        Greeting("Android")
     }
 }
 
@@ -31,17 +44,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    MyApplicationTheme { // Reemplaza esto con el tema de tu aplicación si tienes uno definido
-        Greeting("Android")
+fun MainScreenPreview() {
+    MaterialTheme {
+        MainScreen()
     }
-}
-
-// Puedes definir un tema básico como este si aún no tienes uno
-@Composable
-fun MyApplicationTheme(content: @Composable () -> Unit) {
-    MaterialTheme(
-        // Puedes personalizar los colores, tipografía, etc. aquí
-        content = content
-    )
 }
