@@ -6,7 +6,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import msh.todolist.data.ConfigDataSource
+import msh.todolist.data.datasource.ConfigDataSource
 import javax.inject.Singleton
 
 @Module

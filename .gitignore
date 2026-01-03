@@ -14,3 +14,7 @@
 .cxx
 local.properties
 .idea/inspectionProfiles/Project_Default.xml
+.idea/copilot.data.migration.agent.xml
+.idea/copilot.data.migration.ask.xml
+.idea/copilot.data.migration.edit.xml
+app/schemas/msh.todolist.data.local.AppDatabase/1.json

@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">TodoList</string>
+    <string name="pendientes">Pendientes</string>
+    <string name="completados">Completados</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="editar">Editar</string>
+    <string name="mas_opciones">Más opciones</string>
 </resources>

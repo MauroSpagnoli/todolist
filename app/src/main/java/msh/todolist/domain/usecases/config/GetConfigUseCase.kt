@@ -1,6 +1,6 @@
-package msh.todolist.ui.usecases
+package msh.todolist.domain.usecases.config
 
-import msh.todolist.domain.ConfigRepository
+import msh.todolist.domain.repository.ConfigRepository
 import msh.todolist.dto.ConfigDto
 import javax.inject.Inject
 

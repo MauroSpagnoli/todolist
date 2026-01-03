@@ -1,4 +1,4 @@
-package msh.todolist.domain
+package msh.todolist.domain.repository
 
 import msh.todolist.dto.ConfigDto
 

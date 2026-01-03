@@ -2,7 +2,6 @@ package msh.todolist.ui.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
@@ -20,26 +19,17 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun BottomBar(
     modifier: Modifier = Modifier,
-    onItemSelected: (index: Int) -> Unit = {}
+    onTaskSelected: () -> Unit,
+    onSettingsSelected: () -> Unit
 ) {
     var selectedIndex by remember { mutableIntStateOf(0) }
 
     NavigationBar(modifier = modifier.fillMaxWidth()) {
         NavigationBarItem(
-            selected = selectedIndex == 0,
-            onClick = {
-                selectedIndex = 0
-                onItemSelected(0)
-            },
-            icon = { Icon(imageVector = Icons.Filled.Home, contentDescription = "Inicio") },
-            label = { Text("Inicio") }
-        )
-
-        NavigationBarItem(
             selected = selectedIndex == 1,
             onClick = {
                 selectedIndex = 1
-                onItemSelected(1)
+                onTaskSelected()
             },
             icon = { Icon(imageVector = Icons.Filled.List, contentDescription = "Tareas") },
             label = { Text("Tareas") }
@@ -49,7 +39,7 @@ fun BottomBar(
             selected = selectedIndex == 2,
             onClick = {
                 selectedIndex = 2
-                onItemSelected(2)
+                onSettingsSelected()
             },
             icon = { Icon(imageVector = Icons.Filled.Settings, contentDescription = "Ajustes") },
             label = { Text("Ajustes") }
@@ -60,5 +50,9 @@ fun BottomBar(
 @Preview(showBackground = true)
 @Composable
 fun BottomBarPreview() {
-    BottomBar()
+    BottomBar(
+        modifier = Modifier,
+        onTaskSelected = {},
+        onSettingsSelected = {}
+    )
 }

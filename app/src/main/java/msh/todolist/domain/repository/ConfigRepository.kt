@@ -1,6 +1,6 @@
-package msh.todolist.domain
+package msh.todolist.domain.repository
 
-import msh.todolist.data.ConfigDataSource
+import msh.todolist.data.datasource.ConfigDataSource
 import msh.todolist.dto.ConfigDto
 import javax.inject.Inject
 
