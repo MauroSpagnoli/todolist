@@ -1,31 +1,66 @@
-// MainActivity.kt
 package msh.todolist.ui.activities
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import msh.todolist.ui.common.Layout
-import msh.todolist.ui.common.TodoItem
-import msh.todolist.ui.common.TodoItemEditModal
-import msh.todolist.ui.common.TodoList
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import msh.todolist.ui.components.common.Layout
+import msh.todolist.ui.components.todolist.TodoItem
+import msh.todolist.ui.components.todolist.TodoItemEditModal
+import msh.todolist.ui.components.todolist.TodoList
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MainScreen()
+            MaterialTheme {
+                AppNavHost()
+            }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun AppNavHost() {
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "list") {
+        composable("list") {
+            ListScreen(
+                onSettings = { navController.navigate("settings") }
+            )
+        }
+        composable("settings") {
+            SettingsScreen(
+                onTaskSelected = {
+                    val popped = navController.popBackStack("list", false)
+                    if (!popped) {
+                        navController.navigate("list") { launchSingleTop = true }
+                    }
+                },
+                onSettingsSelected = {
+                    // opcional: evitar duplicados si ya estamos en settings
+                    if (navController.currentDestination?.route != "settings") {
+                        navController.navigate("settings") { launchSingleTop = true }
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun ListScreen(onSettings: () -> Unit) {
     val items = remember {
         mutableStateListOf(
             TodoItem(
@@ -48,12 +83,7 @@ fun MainScreen() {
                 "Preguntar cómo está y contarle las novedades",
                 completed = false
             ),
-            TodoItem(
-                6,
-                "Pasear al perro",
-                "Llevar a Max al parque por la tarde",
-                completed = true
-            )
+            TodoItem(6, "Pasear al perro", "Llevar a Max al parque por la tarde", completed = true)
         )
     }
 
@@ -62,8 +92,8 @@ fun MainScreen() {
 
     Layout(
         title = "ToDo List",
-        onTaskSelected = {},
-        onSettingsSelected = {},
+        onTaskSelected = {}, // si luego añades detalle, navega desde aquí
+        onSettingsSelected = { onSettings() },
     ) {
         TodoList(
             items = items,
@@ -102,10 +132,26 @@ fun MainScreen() {
     }
 }
 
+@Composable
+fun SettingsScreen(
+    onTaskSelected: () -> Unit,
+    onSettingsSelected: () -> Unit
+) {
+    Layout(
+        title = "Ajustes",
+        onTaskSelected = onTaskSelected,
+        onSettingsSelected = onSettingsSelected,
+    ) {
+        Column(modifier = Modifier) {
+            Text("Pantalla de ajustes (pendiente de implementación)")
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-fun MainScreenPreview() {
+fun AppNavHostPreview() {
     MaterialTheme {
-        MainScreen()
+        AppNavHost()
     }
 }

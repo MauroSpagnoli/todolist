@@ -1,4 +1,4 @@
-package msh.todolist.ui.common
+package msh.todolist.ui.components.todolist
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -19,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
@@ -45,7 +45,6 @@ fun TodoItemEditModal(
                 .padding(16.dp)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                // Fila 1: Título
                 OutlinedTextField(
                     value = titleState.value,
                     onValueChange = { titleState.value = it },
@@ -56,7 +55,6 @@ fun TodoItemEditModal(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Fila 2: Descripción
                 OutlinedTextField(
                     value = descriptionState.value,
                     onValueChange = { descriptionState.value = it },
@@ -68,11 +66,9 @@ fun TodoItemEditModal(
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))
-                Divider()
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Fila 3: Botones
                 Row(modifier = Modifier.fillMaxWidth()) {
                     TextButton(onClick = onDismiss) {
                         Text("Cancelar")
@@ -87,10 +83,22 @@ fun TodoItemEditModal(
                             onSave(titleState.value.trim(), descriptionState.value.trim())
                         }
                     ) {
-                        Text("Aceptar")
+                        Text("Modificar")
                     }
                 }
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TodoItemEditModalPreview() {
+    TodoItemEditModal(
+        visible = true,
+        initialTitle = "Título de ejemplo",
+        initialDescription = "Descripción de ejemplo",
+        onDismiss = {},
+        onSave = { _, _ -> }
+    )
 }

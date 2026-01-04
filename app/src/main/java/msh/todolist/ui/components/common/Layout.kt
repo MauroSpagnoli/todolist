@@ -1,5 +1,5 @@
 // kotlin
-package msh.todolist.ui.common
+package msh.todolist.ui.components.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

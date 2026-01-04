@@ -1,4 +1,4 @@
-package msh.todolist.ui.common
+package msh.todolist.ui.components.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
