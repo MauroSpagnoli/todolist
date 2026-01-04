@@ -43,7 +43,8 @@ fun LazyListScope.TodoPendingSection(
     items: List<TodoItem>,
     onEdit: (TodoItem) -> Unit = {},
     onDelete: (TodoItem) -> Unit = {},
-    onToggle: (TodoItem) -> Unit = {}
+    onToggle: (TodoItem) -> Unit = {},
+    onSave: (TodoItem, String, String) -> Unit = { _, _, _ -> }
 ) {
     if (items.isNotEmpty()) {
         item {
@@ -81,7 +82,8 @@ fun LazyListScope.TodoPendingSection(
                             initialCompleted = false,
                             onEdit = { onEdit(item) },
                             onDelete = { onDelete(item) },
-                            onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) }
+                            onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
+                            onSave = { newTitle, newDescription -> onSave(item, newTitle, newDescription) }
                         )
                         if (index < items.lastIndex) {
                             HorizontalDivider(
@@ -101,7 +103,8 @@ fun LazyListScope.TodoCompletedSection(
     items: List<TodoItem>,
     onEdit: (TodoItem) -> Unit = {},
     onDelete: (TodoItem) -> Unit = {},
-    onToggle: (TodoItem) -> Unit = {}
+    onToggle: (TodoItem) -> Unit = {},
+    onSave: (TodoItem, String, String) -> Unit = { _, _, _ -> }
 ) {
     if (items.isNotEmpty()) {
         item {
@@ -139,7 +142,8 @@ fun LazyListScope.TodoCompletedSection(
                             initialCompleted = true,
                             onEdit = { onEdit(item) },
                             onDelete = { onDelete(item) },
-                            onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) }
+                            onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
+                            onSave = { newTitle, newDescription -> onSave(item, newTitle, newDescription) }
                         )
                         if (index < items.lastIndex) {
                             HorizontalDivider(
@@ -161,7 +165,8 @@ fun TodoList(
     modifier: Modifier = Modifier,
     onEdit: (TodoItem) -> Unit = {},
     onDelete: (TodoItem) -> Unit = {},
-    onToggle: (TodoItem) -> Unit = {}
+    onToggle: (TodoItem) -> Unit = {},
+    onSave: (TodoItem, String, String) -> Unit = { _, _, _ -> }
 ) {
     val pending = items.filter { !it.completed }
     val done = items.filter { it.completed }
@@ -170,13 +175,13 @@ fun TodoList(
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 8.dp)
     ) {
-        TodoPendingSection(pending, onEdit = onEdit, onDelete = onDelete, onToggle = onToggle)
+        TodoPendingSection(pending, onEdit = onEdit, onDelete = onDelete, onToggle = onToggle, onSave = onSave)
 
         item {
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        TodoCompletedSection(done, onEdit = onEdit, onDelete = onDelete, onToggle = onToggle)
+        TodoCompletedSection(done, onEdit = onEdit, onDelete = onDelete, onToggle = onToggle, onSave = onSave)
     }
 }
 

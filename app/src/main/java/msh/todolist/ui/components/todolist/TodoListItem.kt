@@ -41,10 +41,12 @@ fun TodoListItemStateful(
     initialCompleted: Boolean = false,
     onEdit: () -> Unit = {},
     onDelete: () -> Unit = {},
-    onCheckedChange: (Boolean) -> Unit = {}
+    onCheckedChange: (Boolean) -> Unit = {},
+    onSave: (String, String) -> Unit = { _, _ -> }
 ) {
     var completed by remember { mutableStateOf(initialCompleted) }
     var menuExpanded by remember { mutableStateOf(false) }
+    var isEditModalVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(initialCompleted) {
         completed = initialCompleted
@@ -97,6 +99,9 @@ fun TodoListItemStateful(
                         leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                         onClick = {
                             menuExpanded = false
+                            // abrir el modal de edición localmente
+                            isEditModalVisible = true
+                            // informar al padre si quiere reaccionar también
                             onEdit()
                         }
                     )
@@ -120,6 +125,18 @@ fun TodoListItemStateful(
             }
         }
     }
+
+    // Modal de edición controlado por el propio ítem
+    TodoItemEditModal(
+        visible = isEditModalVisible,
+        initialTitle = title,
+        initialDescription = description,
+        onDismiss = { isEditModalVisible = false },
+        onSave = { newTitle, newDescription ->
+            isEditModalVisible = false
+            onSave(newTitle, newDescription)
+        }
+    )
 }
 
 @Preview(showBackground = true)
