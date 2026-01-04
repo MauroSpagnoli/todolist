@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 
 @HiltViewModel
 class TodoListViewModel @Inject constructor(
-    private val getAllTodosUseCase: GetAllTodosUseCase,
+    getAllTodosUseCase: GetAllTodosUseCase,
     private val insertTodoUseCase: InsertTodoUseCase,
     private val updateTodoUseCase: UpdateTodoUseCase,
     private val deleteTodoUseCase: DeleteTodoUseCase
