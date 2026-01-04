@@ -43,51 +43,65 @@ data class TodoItem(
 @Suppress("FunctionName")
 fun LazyListScope.TodoPendingSection(
     items: List<TodoItem>,
+    onAddClick: (Boolean) -> Unit = {},
     onEdit: (TodoItem) -> Unit = {},
     onDelete: (TodoItem) -> Unit = {},
     onToggle: (TodoItem) -> Unit = {},
     onSave: (TodoItem, String, String) -> Unit = { _, _, _ -> }
 ) {
-    if (items.isNotEmpty()) {
-        item {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-            ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.pendientes),
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                            modifier = Modifier.weight(1f)
+    // Mostrar la sección aunque esté vacía para que el botón + siempre esté disponible
+    item {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.pendientes),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = { onAddClick(false) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = null
                         )
-                        IconButton(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.Filled.Add,
-                                contentDescription = null
-                            )
-                        }
                     }
+                }
 
+                if (items.isEmpty()) {
+                    // Mostrar estado vacío en la sección
+                    Text(
+                        text = "No hay tareas pendientes",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                } else {
                     items.forEachIndexed { index, item ->
                         key(item.id) {
-                        TodoListItemStateful(
-                            title = item.title,
-                            description = item.description,
-                            initialCompleted = item.completed,
-                            onEdit = { onEdit(item) },
-                            onDelete = { onDelete(item) },
-                            onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
-                            onSave = { newTitle, newDescription -> onSave(item, newTitle, newDescription) }
-                        )
+                            TodoListItemStateful(
+                                title = item.title,
+                                description = item.description,
+                                initialCompleted = item.completed,
+                                onEdit = { onEdit(item) },
+                                onDelete = { onDelete(item) },
+                                onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
+                                onSave = { newTitle, newDescription ->
+                                    onSave(
+                                        item,
+                                        newTitle,
+                                        newDescription
+                                    )
+                                }
+                            )
                         }
                         if (index < items.lastIndex) {
                             HorizontalDivider(
@@ -106,51 +120,65 @@ fun LazyListScope.TodoPendingSection(
 @Suppress("FunctionName")
 fun LazyListScope.TodoCompletedSection(
     items: List<TodoItem>,
+    onAddClick: (Boolean) -> Unit = {},
     onEdit: (TodoItem) -> Unit = {},
     onDelete: (TodoItem) -> Unit = {},
     onToggle: (TodoItem) -> Unit = {},
     onSave: (TodoItem, String, String) -> Unit = { _, _, _ -> }
 ) {
-    if (items.isNotEmpty()) {
-        item {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-            ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = stringResource(R.string.completados),
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                            modifier = Modifier.weight(1f)
+    // Mostrar la sección aunque esté vacía para que el botón + siempre esté disponible
+    item {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        ) {
+            Column(modifier = Modifier.padding(12.dp)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(R.string.completados),
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
+                        modifier = Modifier.weight(1f)
+                    )
+                    IconButton(onClick = { onAddClick(true) }) {
+                        Icon(
+                            imageVector = Icons.Filled.Add,
+                            contentDescription = null
                         )
-                        IconButton(onClick = { }) {
-                            Icon(
-                                imageVector = Icons.Filled.Add,
-                                contentDescription = null
-                            )
-                        }
                     }
+                }
 
+                if (items.isEmpty()) {
+                    // Mostrar estado vacío en la sección
+                    Text(
+                        text = "No hay tareas completadas",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                } else {
                     items.forEachIndexed { index, item ->
                         key(item.id) {
-                        TodoListItemStateful(
-                            title = item.title,
-                            description = item.description,
-                            initialCompleted = item.completed,
-                            onEdit = { onEdit(item) },
-                            onDelete = { onDelete(item) },
-                            onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
-                            onSave = { newTitle, newDescription -> onSave(item, newTitle, newDescription) }
-                        )
+                            TodoListItemStateful(
+                                title = item.title,
+                                description = item.description,
+                                initialCompleted = item.completed,
+                                onEdit = { onEdit(item) },
+                                onDelete = { onDelete(item) },
+                                onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
+                                onSave = { newTitle, newDescription ->
+                                    onSave(
+                                        item,
+                                        newTitle,
+                                        newDescription
+                                    )
+                                }
+                            )
                         }
                         if (index < items.lastIndex) {
                             HorizontalDivider(
@@ -170,6 +198,7 @@ fun LazyListScope.TodoCompletedSection(
 fun TodoList(
     items: List<TodoItem>,
     modifier: Modifier = Modifier,
+    onAddClick: (Boolean) -> Unit = {},
     onEdit: (TodoItem) -> Unit = {},
     onDelete: (TodoItem) -> Unit = {},
     onToggle: (TodoItem) -> Unit = {},
@@ -182,13 +211,27 @@ fun TodoList(
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 8.dp)
     ) {
-        TodoPendingSection(pending, onEdit = onEdit, onDelete = onDelete, onToggle = onToggle, onSave = onSave)
+        TodoPendingSection(
+            pending,
+            onAddClick = onAddClick,
+            onEdit = onEdit,
+            onDelete = onDelete,
+            onToggle = onToggle,
+            onSave = onSave
+        )
 
         item {
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        TodoCompletedSection(done, onEdit = onEdit, onDelete = onDelete, onToggle = onToggle, onSave = onSave)
+        TodoCompletedSection(
+            done,
+            onAddClick = onAddClick,
+            onEdit = onEdit,
+            onDelete = onDelete,
+            onToggle = onToggle,
+            onSave = onSave
+        )
     }
 }
 

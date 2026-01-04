@@ -81,6 +81,9 @@ dependencies {
     androidTestImplementation libs.hilt.android.testing
     kaptAndroidTest libs.hilt.compiler
 
+    // Hilt Navigation for Compose
+    implementation libs.androidx.hilt.navigation.compose
+
     // Tests
     testImplementation libs.junit
     androidTestImplementation libs.androidx.junit

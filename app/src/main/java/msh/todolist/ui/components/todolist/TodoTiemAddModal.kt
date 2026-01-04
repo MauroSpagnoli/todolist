@@ -14,6 +14,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.Checkbox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,13 +29,16 @@ fun TodoItemAddModal(
     visible: Boolean,
     initialTitle: String = "",
     initialDescription: String = "",
+    initialCompleted: Boolean = false,
+    forceCompleted: Boolean = false,
     onDismiss: () -> Unit,
-    onAdd: (title: String, description: String) -> Unit
+    onAdd: (title: String, description: String, completed: Boolean) -> Unit
 ) {
     if (!visible) return
 
     val titleState = remember { mutableStateOf(initialTitle) }
     val descriptionState = remember { mutableStateOf(initialDescription) }
+    val completedState = remember { mutableStateOf(initialCompleted) }
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -67,7 +71,19 @@ fun TodoItemAddModal(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
+                // Checkbox para marcar como completado (oculto si forceCompleted == true)
+                if (!forceCompleted) {
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Checkbox(
+                            checked = completedState.value,
+                            onCheckedChange = { completedState.value = it }
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = if (completedState.value) "Completada" else "Pendiente")
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
 
                 Row(modifier = Modifier.fillMaxWidth()) {
                     TextButton(onClick = onDismiss) {
@@ -80,7 +96,8 @@ fun TodoItemAddModal(
 
                     Button(
                         onClick = {
-                            onAdd(titleState.value.trim(), descriptionState.value.trim())
+                            val completed = if (forceCompleted) true else completedState.value
+                            onAdd(titleState.value.trim(), descriptionState.value.trim(), completed)
                         }
                     ) {
                         Text("Agregar")
@@ -98,7 +115,9 @@ fun TodoItemAddModalPreview() {
         visible = true,
         initialTitle = "",
         initialDescription = "",
+        initialCompleted = false,
+        forceCompleted = false,
         onDismiss = {},
-        onAdd = { _, _ -> }
+        onAdd = { _, _, _ -> }
     )
 }
