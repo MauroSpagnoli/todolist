@@ -7,4 +7,4 @@ import msh.todolist.constants.Constants.LOG_TAG
 import javax.inject.Inject
 
 @HiltAndroidApp
-class TodoListApp : Application() 
+class TodoListApp : Application()
