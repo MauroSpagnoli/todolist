@@ -8,7 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import msh.todolist.data.local.TodoEntity
+import msh.todolist.domain.model.Todo
 import msh.todolist.ui.components.common.Layout
 import msh.todolist.ui.viewmodel.TodoListViewModel
 
@@ -49,22 +49,22 @@ fun ListScreen(
             },
             onToggle = { updatedItem ->
                 // actualizar completed
-                val updatedEntity = TodoEntity(
+                val updated = Todo(
                     id = updatedItem.id,
                     title = updatedItem.title,
                     description = updatedItem.description.ifEmpty { null },
                     completed = updatedItem.completed
                 )
-                viewModel.updateTodo(updatedEntity)
+                viewModel.updateTodo(updated)
             },
             onSave = { item, newTitle, newDescription ->
-                val updatedEntity = TodoEntity(
+                val updated = Todo(
                     id = item.id,
                     title = newTitle,
                     description = newDescription.ifEmpty { null },
                     completed = item.completed
                 )
-                viewModel.updateTodo(updatedEntity)
+                viewModel.updateTodo(updated)
             }
         )
 
@@ -83,7 +83,7 @@ fun ListScreen(
                             job.join()
                             snackbarHostState.showSnackbar("Tarea añadida")
                         } catch (t: Throwable) {
-                            snackbarHostState.showSnackbar("Error al añadir la tarea")
+                            snackbarHostState.showSnackbar("Error al añadir la tarea: ${t.message ?: ""}")
                         }
                     }
                 }
