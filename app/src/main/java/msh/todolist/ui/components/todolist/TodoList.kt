@@ -22,6 +22,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -39,6 +40,7 @@ data class TodoItem(
     val onDelete: () -> Unit = {}
 )
 
+@Suppress("FunctionName")
 fun LazyListScope.TodoPendingSection(
     items: List<TodoItem>,
     onEdit: (TodoItem) -> Unit = {},
@@ -76,15 +78,17 @@ fun LazyListScope.TodoPendingSection(
                     }
 
                     items.forEachIndexed { index, item ->
+                        key(item.id) {
                         TodoListItemStateful(
                             title = item.title,
                             description = item.description,
-                            initialCompleted = false,
+                            initialCompleted = item.completed,
                             onEdit = { onEdit(item) },
                             onDelete = { onDelete(item) },
                             onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
                             onSave = { newTitle, newDescription -> onSave(item, newTitle, newDescription) }
                         )
+                        }
                         if (index < items.lastIndex) {
                             HorizontalDivider(
                                 modifier = Modifier.padding(vertical = 6.dp),
@@ -99,6 +103,7 @@ fun LazyListScope.TodoPendingSection(
     }
 }
 
+@Suppress("FunctionName")
 fun LazyListScope.TodoCompletedSection(
     items: List<TodoItem>,
     onEdit: (TodoItem) -> Unit = {},
@@ -136,15 +141,17 @@ fun LazyListScope.TodoCompletedSection(
                     }
 
                     items.forEachIndexed { index, item ->
+                        key(item.id) {
                         TodoListItemStateful(
                             title = item.title,
                             description = item.description,
-                            initialCompleted = true,
+                            initialCompleted = item.completed,
                             onEdit = { onEdit(item) },
                             onDelete = { onDelete(item) },
                             onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
                             onSave = { newTitle, newDescription -> onSave(item, newTitle, newDescription) }
                         )
+                        }
                         if (index < items.lastIndex) {
                             HorizontalDivider(
                                 modifier = Modifier.padding(vertical = 6.dp),
