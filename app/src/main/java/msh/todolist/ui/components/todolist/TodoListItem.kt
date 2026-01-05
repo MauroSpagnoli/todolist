@@ -36,20 +36,18 @@ import msh.todolist.R
 
 @Composable
 fun TodoListItemStateful(
-    title: String,
-    description: String,
-    initialCompleted: Boolean = false,
-    onEdit: () -> Unit = {},
-    onDelete: () -> Unit = {},
-    onCheckedChange: (Boolean) -> Unit = {},
-    onSave: (String, String) -> Unit = { _, _ -> }
+    item: UiTodo,
+    onEdit: (UiTodo) -> Unit = {},
+    onDelete: (UiTodo) -> Unit = {},
+    onCheckedChange: (UiTodo, Boolean) -> Unit = { _, _ -> },
+    onSave: (UiTodo, String, String) -> Unit = { _, _, _ -> }
 ) {
-    var completed by remember { mutableStateOf(initialCompleted) }
+    var completed by remember { mutableStateOf(item.completed) }
     var menuExpanded by remember { mutableStateOf(false) }
     var isEditModalVisible by remember { mutableStateOf(false) }
 
-    LaunchedEffect(initialCompleted) {
-        completed = initialCompleted
+    LaunchedEffect(item.completed) {
+        completed = item.completed
     }
 
     Column(
@@ -58,7 +56,7 @@ fun TodoListItemStateful(
             .padding(12.dp)
     ) {
         Text(
-            text = title,
+            text = item.title,
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
             textDecoration = if (completed) TextDecoration.LineThrough else TextDecoration.None,
             maxLines = 1,
@@ -72,7 +70,7 @@ fun TodoListItemStateful(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = description,
+                text = item.description,
                 style = MaterialTheme.typography.bodyMedium,
                 modifier = Modifier.weight(1f),
                 textDecoration = if (completed) TextDecoration.LineThrough else TextDecoration.None,
@@ -81,9 +79,7 @@ fun TodoListItemStateful(
             )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {
-                    menuExpanded = true
-                }) {
+                IconButton(onClick = { menuExpanded = true }) {
                     Icon(
                         imageVector = Icons.Default.MoreVert,
                         contentDescription = stringResource(R.string.mas_opciones)
@@ -99,10 +95,8 @@ fun TodoListItemStateful(
                         leadingIcon = { Icon(Icons.Default.Edit, contentDescription = null) },
                         onClick = {
                             menuExpanded = false
-                            // abrir el modal de edición localmente
                             isEditModalVisible = true
-                            // informar al padre si quiere reaccionar también
-                            onEdit()
+                            onEdit(item)
                         }
                     )
                     DropdownMenuItem(
@@ -110,7 +104,7 @@ fun TodoListItemStateful(
                         leadingIcon = { Icon(Icons.Default.Delete, contentDescription = null) },
                         onClick = {
                             menuExpanded = false
-                            onDelete()
+                            onDelete(item)
                         }
                     )
                 }
@@ -119,22 +113,21 @@ fun TodoListItemStateful(
                     checked = completed,
                     onCheckedChange = { checked ->
                         completed = checked
-                        onCheckedChange(checked)
+                        onCheckedChange(item, checked)
                     }
                 )
             }
         }
     }
 
-    // Modal de edición controlado por el propio ítem
     TodoItemEditModal(
         visible = isEditModalVisible,
-        initialTitle = title,
-        initialDescription = description,
+        initialTitle = item.title,
+        initialDescription = item.description,
         onDismiss = { isEditModalVisible = false },
         onSave = { newTitle, newDescription ->
             isEditModalVisible = false
-            onSave(newTitle, newDescription)
+            onSave(item, newTitle, newDescription)
         }
     )
 }
@@ -143,8 +136,7 @@ fun TodoListItemStateful(
 @Composable
 fun TodoListItemPreview() {
     TodoListItemStateful(
-        title = "Comprar leche",
-        description = "Ir al supermercado y comprar leche, pan y huevos",
+        item = UiTodo(1, "Comprar leche", "Ir al supermercado y comprar leche, pan y huevos", completed = false),
         onEdit = {},
         onDelete = {}
     )

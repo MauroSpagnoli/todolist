@@ -2,35 +2,25 @@ package msh.todolist.ui.components.todolist
 
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import kotlinx.coroutines.launch
-import msh.todolist.domain.model.Todo
 import msh.todolist.ui.components.common.Layout
-import msh.todolist.ui.viewmodel.TodoListViewModel
 
 @Composable
 fun ListScreen(
     onSettings: () -> Unit,
-    viewModel: TodoListViewModel
+    todos: List<UiTodo>,
+    onAdd: suspend (title: String, description: String?, completed: Boolean) -> Unit,
+    onDelete: (id: Long) -> Unit,
+    onToggle: (id: Long, completed: Boolean) -> Unit,
+    onSave: (id: Long, title: String, description: String?) -> Unit
 ) {
-    val todosState by viewModel.todos.collectAsState()
     val isAddVisible = remember { mutableStateOf(false) }
     val isAddCompleted = remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
-    val items = todosState.map { entity ->
-        TodoItem(
-            id = entity.id,
-            title = entity.title,
-            description = entity.description ?: "",
-            completed = entity.completed
-        )
-    }
 
     Layout(
         title = "ToDo List",
@@ -39,32 +29,18 @@ fun ListScreen(
         snackbarHostState = snackbarHostState
     ) {
         TodoList(
-            items = items,
+            items = todos,
             onAddClick = { completed ->
                 isAddCompleted.value = completed
                 isAddVisible.value = true
             },
-            onDelete = { item ->
-                viewModel.deleteTodo(item.id)
-            },
-            onToggle = { updatedItem ->
-                // actualizar completed
-                val updated = Todo(
-                    id = updatedItem.id,
-                    title = updatedItem.title,
-                    description = updatedItem.description.ifEmpty { null },
-                    completed = updatedItem.completed
-                )
-                viewModel.updateTodo(updated)
-            },
+            onDelete = { item -> onDelete(item.id) },
+            onToggle = { item, checked -> onToggle(item.id, checked) },
             onSave = { item, newTitle, newDescription ->
-                val updated = Todo(
-                    id = item.id,
-                    title = newTitle,
-                    description = newDescription.ifEmpty { null },
-                    completed = item.completed
-                )
-                viewModel.updateTodo(updated)
+                onSave(
+                    item.id,
+                    newTitle,
+                    newDescription.ifEmpty { null })
             }
         )
 
@@ -76,11 +52,9 @@ fun ListScreen(
             onDismiss = { isAddVisible.value = false },
             onAdd = { title, description, completed ->
                 if (title.isNotBlank()) {
-                    val job = viewModel.addTodo(title, description.ifBlank { null }, completed)
-                    // esperar a que termine y mostrar snackbar
                     coroutineScope.launch {
                         try {
-                            job.join()
+                            onAdd(title, description.ifBlank { null }, completed)
                             snackbarHostState.showSnackbar("Tarea añadida")
                         } catch (t: Throwable) {
                             snackbarHostState.showSnackbar("Error al añadir la tarea: ${t.message ?: ""}")

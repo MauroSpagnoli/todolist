@@ -31,25 +31,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import msh.todolist.R
 
-data class TodoItem(
+data class UiTodo(
     val id: Long,
-    var title: String,
-    var description: String,
-    var completed: Boolean = false,
-    val onEdit: () -> Unit = {},
-    val onDelete: () -> Unit = {}
+    val title: String,
+    val description: String,
+    val completed: Boolean = false
 )
 
 @Suppress("FunctionName")
-fun LazyListScope.TodoPendingSection(
-    items: List<TodoItem>,
+fun LazyListScope.TodoSection(
+    titleRes: Int,
+    items: List<UiTodo>,
     onAddClick: (Boolean) -> Unit = {},
-    onEdit: (TodoItem) -> Unit = {},
-    onDelete: (TodoItem) -> Unit = {},
-    onToggle: (TodoItem) -> Unit = {},
-    onSave: (TodoItem, String, String) -> Unit = { _, _, _ -> }
+    onEdit: (UiTodo) -> Unit = { _ -> },
+    onDelete: (UiTodo) -> Unit = { _ -> },
+    onToggle: (UiTodo, Boolean) -> Unit = { _, _ -> },
+    onSave: (UiTodo, String, String) -> Unit = { _, _, _ -> }
 ) {
-    // Mostrar la sección aunque esté vacía para que el botón + siempre esté disponible
     item {
         Card(
             modifier = Modifier
@@ -66,11 +64,11 @@ fun LazyListScope.TodoPendingSection(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = stringResource(R.string.pendientes),
+                        text = stringResource(titleRes),
                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
                         modifier = Modifier.weight(1f)
                     )
-                    IconButton(onClick = { onAddClick(false) }) {
+                    IconButton(onClick = { onAddClick(items.firstOrNull()?.completed ?: false) }) {
                         Icon(
                             imageVector = Icons.Filled.Add,
                             contentDescription = null
@@ -79,105 +77,19 @@ fun LazyListScope.TodoPendingSection(
                 }
 
                 if (items.isEmpty()) {
-                    // Mostrar estado vacío en la sección
                     Text(
-                        text = "No hay tareas pendientes",
+                        text = if (titleRes == R.string.pendientes) "No hay tareas pendientes" else "No hay tareas completadas",
                         style = MaterialTheme.typography.bodyMedium
                     )
                 } else {
                     items.forEachIndexed { index, item ->
                         key(item.id) {
                             TodoListItemStateful(
-                                title = item.title,
-                                description = item.description,
-                                initialCompleted = item.completed,
-                                onEdit = { onEdit(item) },
-                                onDelete = { onDelete(item) },
-                                onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
-                                onSave = { newTitle, newDescription ->
-                                    onSave(
-                                        item,
-                                        newTitle,
-                                        newDescription
-                                    )
-                                }
-                            )
-                        }
-                        if (index < items.lastIndex) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = 6.dp),
-                                thickness = DividerDefaults.Thickness,
-                                color = DividerDefaults.color
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@Suppress("FunctionName")
-fun LazyListScope.TodoCompletedSection(
-    items: List<TodoItem>,
-    onAddClick: (Boolean) -> Unit = {},
-    onEdit: (TodoItem) -> Unit = {},
-    onDelete: (TodoItem) -> Unit = {},
-    onToggle: (TodoItem) -> Unit = {},
-    onSave: (TodoItem, String, String) -> Unit = { _, _, _ -> }
-) {
-    // Mostrar la sección aunque esté vacía para que el botón + siempre esté disponible
-    item {
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-        ) {
-            Column(modifier = Modifier.padding(12.dp)) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = stringResource(R.string.completados),
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-                        modifier = Modifier.weight(1f)
-                    )
-                    IconButton(onClick = { onAddClick(true) }) {
-                        Icon(
-                            imageVector = Icons.Filled.Add,
-                            contentDescription = null
-                        )
-                    }
-                }
-
-                if (items.isEmpty()) {
-                    // Mostrar estado vacío en la sección
-                    Text(
-                        text = "No hay tareas completadas",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                } else {
-                    items.forEachIndexed { index, item ->
-                        key(item.id) {
-                            TodoListItemStateful(
-                                title = item.title,
-                                description = item.description,
-                                initialCompleted = item.completed,
-                                onEdit = { onEdit(item) },
-                                onDelete = { onDelete(item) },
-                                onCheckedChange = { checked -> onToggle(item.copy(completed = checked)) },
-                                onSave = { newTitle, newDescription ->
-                                    onSave(
-                                        item,
-                                        newTitle,
-                                        newDescription
-                                    )
-                                }
+                                item = item,
+                                onEdit = onEdit,
+                                onDelete = onDelete,
+                                onCheckedChange = onToggle,
+                                onSave = onSave
                             )
                         }
                         if (index < items.lastIndex) {
@@ -196,13 +108,13 @@ fun LazyListScope.TodoCompletedSection(
 
 @Composable
 fun TodoList(
-    items: List<TodoItem>,
+    items: List<UiTodo>,
     modifier: Modifier = Modifier,
     onAddClick: (Boolean) -> Unit = {},
-    onEdit: (TodoItem) -> Unit = {},
-    onDelete: (TodoItem) -> Unit = {},
-    onToggle: (TodoItem) -> Unit = {},
-    onSave: (TodoItem, String, String) -> Unit = { _, _, _ -> }
+    onEdit: (UiTodo) -> Unit = { _ -> },
+    onDelete: (UiTodo) -> Unit = { _ -> },
+    onToggle: (UiTodo, Boolean) -> Unit = { _, _ -> },
+    onSave: (UiTodo, String, String) -> Unit = { _, _, _ -> }
 ) {
     val pending = items.filter { !it.completed }
     val done = items.filter { it.completed }
@@ -211,8 +123,9 @@ fun TodoList(
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 8.dp)
     ) {
-        TodoPendingSection(
-            pending,
+        TodoSection(
+            titleRes = R.string.pendientes,
+            items = pending,
             onAddClick = onAddClick,
             onEdit = onEdit,
             onDelete = onDelete,
@@ -224,8 +137,9 @@ fun TodoList(
             Spacer(modifier = Modifier.height(8.dp))
         }
 
-        TodoCompletedSection(
-            done,
+        TodoSection(
+            titleRes = R.string.completados,
+            items = done,
             onAddClick = onAddClick,
             onEdit = onEdit,
             onDelete = onDelete,
@@ -239,15 +153,10 @@ fun TodoList(
 @Composable
 fun TodoListPreview() {
     val sample = listOf(
-        TodoItem(
-            1,
-            "Comprar leche",
-            "Ir al supermercado y comprar leche, pan y huevos",
-            completed = false
-        ),
-        TodoItem(2, "Enviar email", "Responder al correo de la reunión", completed = true),
-        TodoItem(3, "Ejercicio", "30 minutos de running", completed = false)
+        UiTodo(1, "Comprar leche", "Ir al supermercado y comprar leche, pan y huevos", completed = false),
+        UiTodo(2, "Enviar email", "Responder al correo de la reunión", completed = true),
+        UiTodo(3, "Ejercicio", "30 minutos de running", completed = false)
     )
 
-    TodoList(items = sample, onToggle = { /* actualizar estado en ViewModel o padre */ })
+    TodoList(items = sample, onToggle = { _, _ -> })
 }
