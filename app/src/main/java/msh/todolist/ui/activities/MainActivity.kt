@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import msh.todolist.ui.components.settings.SettingsScreen
 import msh.todolist.ui.components.todolist.ListScreen
 import msh.todolist.ui.viewmodel.TodoListViewModel
+import msh.todolist.ui.constants.Routes
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,24 +32,24 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppNavHost(viewModel: TodoListViewModel) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "list") {
-        composable("list") {
+    NavHost(navController = navController, startDestination = Routes.LIST) {
+        composable(Routes.LIST) {
             ListScreen(
-                onSettings = { navController.navigate("settings") },
+                onSettings = { navController.navigate(Routes.SETTINGS) },
                 viewModel = viewModel
             )
         }
-        composable("settings") {
+        composable(Routes.SETTINGS) {
             SettingsScreen(
                 onTaskSelected = {
-                    val popped = navController.popBackStack("list", false)
+                    val popped = navController.popBackStack(Routes.LIST, false)
                     if (!popped) {
-                        navController.navigate("list") { launchSingleTop = true }
+                        navController.navigate(Routes.LIST) { launchSingleTop = true }
                     }
                 },
                 onSettingsSelected = {
-                    if (navController.currentDestination?.route != "settings") {
-                        navController.navigate("settings") { launchSingleTop = true }
+                    if (navController.currentDestination?.route != Routes.SETTINGS) {
+                        navController.navigate(Routes.SETTINGS) { launchSingleTop = true }
                     }
                 }
             )
