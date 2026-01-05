@@ -71,20 +71,6 @@ fun TodoItemAddModal(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Checkbox para marcar como completado (oculto si forceCompleted == true)
-                if (!forceCompleted) {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        Checkbox(
-                            checked = completedState.value,
-                            onCheckedChange = { completedState.value = it }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = if (completedState.value) "Completada" else "Pendiente")
-                    }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
-
                 Row(modifier = Modifier.fillMaxWidth()) {
                     TextButton(onClick = onDismiss) {
                         Text("Cancelar")

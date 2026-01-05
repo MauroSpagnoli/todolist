@@ -4,8 +4,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import msh.todolist.domain.repository.ITodoRepository
-import msh.todolist.data.repository.TodoRepository
+import msh.todolist.domain.repository.TodoRepository
+import msh.todolist.data.repository.TodoRepositoryImpl
 import javax.inject.Singleton
 
 @Module
@@ -15,6 +15,6 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun bindTodoRepository(impl: TodoRepository): ITodoRepository
+    abstract fun bindTodoRepository(impl: TodoRepositoryImpl): TodoRepository
 
 }
