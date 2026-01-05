@@ -6,12 +6,12 @@ import msh.todolist.data.local.TodoDao
 import msh.todolist.data.local.toDomain
 import msh.todolist.data.local.toEntity
 import msh.todolist.domain.model.Todo
-import msh.todolist.domain.repository.ITodoRepository
+import msh.todolist.domain.repository.TodoRepository
 import javax.inject.Inject
 
-class TodoRepository @Inject constructor(
+class TodoRepositoryImpl @Inject constructor(
     private val dao: TodoDao
-) : ITodoRepository {
+) : TodoRepository {
     override fun getAll(): Flow<List<Todo>> = dao.getAll().map { list -> list.map { it.toDomain() } }
 
     override suspend fun insert(todo: Todo): Long {
@@ -26,4 +26,3 @@ class TodoRepository @Inject constructor(
         dao.delete(todoId)
     }
 }
-
