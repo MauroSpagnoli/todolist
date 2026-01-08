@@ -1,5 +1,5 @@
 # Workflow de CI para Android
-# Descripción: compila el módulo `app`, ejecuta Detekt y publica los artefactos en una Release de GitHub
+# Descripción: compila el módulo `app` y publica los artefactos en una Release de GitHub
 name: Android CI
 
 # Permisos: asegurar que el token de Actions pueda crear releases y subir assets
@@ -44,13 +44,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      # 4) Asegurar que el wrapper es ejecutable (necesario en runners Linux)
+      # 4) Hacer ejecutable el wrapper (necesario en runners Linux)
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
       # 5) Ejecutar Detekt para analizar el código antes de compilar
-      #    - Ejecutamos la tarea del módulo `app` para generar reportes
-      #    - No fallamos inmediatamente para poder subir los reportes y mostrarlos
+      #    Capturamos el código de salida para poder subir reportes y luego fallar condicionalmente
       - name: Run Detekt
         id: run_detekt
         run: |
@@ -60,7 +59,6 @@ jobs:
           echo "detekt_rc=$rc" >> $GITHUB_OUTPUT
 
       # 6) Subir reportes de Detekt como artifact (si existen)
-      #    - Usamos la versión v4 de upload-artifact (no-deprecated)
       - name: Upload Detekt report
         uses: actions/upload-artifact@v4
         with:
@@ -103,7 +101,7 @@ jobs:
           echo "aab=$aab" >> $GITHUB_OUTPUT
 
       # 11) Crear una Release en GitHub para adjuntar los artefactos
-      #     - Usa el token provisto por GitHub Actions (secreto automático GITHUB_TOKEN)
+      # Usa el token provisto por GitHub Actions (secreto automático GITHUB_TOKEN)
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
