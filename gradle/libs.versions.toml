@@ -25,10 +25,12 @@ room-runtime = "2.6.1"
 ui-test-junit4 = "1.6.0"
 ui-tooling = "1.6.0"
 ui-tooling-version = "1.5.3"
+detekt = "1.22.0"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
 [libraries]
 androidx-core = { module = "androidx.test:core", version.ref = "core" }

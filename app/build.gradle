@@ -4,6 +4,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'org.jetbrains.kotlin.kapt'
     id 'dagger.hilt.android.plugin'
+    // Aplicar Detekt desde el version catalog (versión definida en gradle/libs.versions.toml)
+    alias(libs.plugins.detekt)
 }
 
 kapt {
@@ -110,4 +112,24 @@ dependencies {
     testImplementation libs.androidx.ui.test.junit4
     testImplementation libs.androidx.ui.tooling.v153
     // ----------------------------------------------------------------
+}
+
+// Configuración local del plugin Detekt para este módulo (generar reportes)
+detekt {
+    // Usa el archivo detekt.yml en la raíz (configurado en build.gradle raíz también)
+    config = files("${rootDir}/detekt.yml")
+    buildUponDefaultConfig = true
+    reports {
+        html {
+            enabled = true
+            destination = file("${buildDir}/reports/detekt/detekt.html")
+        }
+        xml {
+            enabled = true
+            destination = file("${buildDir}/reports/detekt/detekt.xml")
+        }
+        txt {
+            enabled = false
+        }
+    }
 }

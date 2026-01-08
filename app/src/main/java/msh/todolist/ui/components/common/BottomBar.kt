@@ -2,7 +2,7 @@ package msh.todolist.ui.components.common
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -31,7 +31,12 @@ fun BottomBar(
                 selectedIndex = 1
                 onTaskSelected()
             },
-            icon = { Icon(imageVector = Icons.Filled.List, contentDescription = "Tareas") },
+            icon = {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.List,
+                    contentDescription = "Tareas"
+                )
+            },
             label = { Text("Tareas") }
         )
 

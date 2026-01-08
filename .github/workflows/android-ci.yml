@@ -48,12 +48,38 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      # 5) Compilar la app en modo release
+      # 5) Ejecutar Detekt para analizar el código antes de compilar
+      #    Capturamos el código de salida para poder subir reportes y luego fallar condicionalmente
+      - name: Run Detekt
+        id: run_detekt
+        run: |
+          # Ejecutar detekt del módulo app y no terminar el job inmediatamente si falla
+          ./gradlew :app:detekt || true
+          rc=$?
+          echo "detekt_rc=$rc" >> $GITHUB_OUTPUT
+
+      # 6) Subir reportes de Detekt como artifact (si existen)
+      - name: Upload Detekt report
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-report
+          path: |
+            app/build/reports/detekt/**/*.html
+            app/build/reports/detekt/**/*.xml
+
+      # 7) Fallar el job si Detekt devolvió código de error (es decir, encontró issues)
+      - name: Fail if Detekt found issues
+        if: ${{ steps.run_detekt.outputs.detekt_rc != '0' }}
+        run: |
+          echo "Detekt found issues (exit code: ${{ steps.run_detekt.outputs.detekt_rc }})"
+          exit 1
+
+      # 8) Compilar la app en modo release
       # Nota: si tu configuración de signing requiere keystore en secrets, habría que añadir pasos para inyectarlo antes de compilar
       - name: Build app (assembleRelease)
         run: ./gradlew clean :app:assembleRelease -Pandroid.debug.obsoleteApi=true
 
-      # 6) Subir los APK/AAB generados como artifact del workflow (para descargas rápidas desde Actions)
+      # 9) Subir los APK/AAB generados como artifact del workflow (para descargas rápidas desde Actions)
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -62,7 +88,7 @@ jobs:
             app/build/outputs/**/*.apk
             app/build/outputs/**/*.aab
 
-      # 7) Buscar la ruta del APK/AAB generados y exportarlas como outputs de este paso
+      # 10) Buscar la ruta del APK/AAB generados y exportarlas como outputs de este paso
       - name: Find built APK/AAB
         id: find_artifact
         run: |
@@ -74,7 +100,7 @@ jobs:
           echo "apk=$apk" >> $GITHUB_OUTPUT
           echo "aab=$aab" >> $GITHUB_OUTPUT
 
-      # 8) Crear una Release en GitHub para adjuntar los artefactos
+      # 11) Crear una Release en GitHub para adjuntar los artefactos
       # Usa el token provisto por GitHub Actions (secreto automático GITHUB_TOKEN)
       - name: Create GitHub Release
         id: create_release
@@ -88,7 +114,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 9) Adjuntar el APK a la Release (si se generó)
+      # 12) Adjuntar el APK a la Release (si se generó)
       - name: Upload APK to Release
         if: steps.find_artifact.outputs.apk != ''
         uses: actions/upload-release-asset@v1
@@ -100,7 +126,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # 10) Adjuntar el AAB a la Release (si se generó)
+      # 13) Adjuntar el AAB a la Release (si se generó)
       - name: Upload AAB to Release
         if: steps.find_artifact.outputs.aab != ''
         uses: actions/upload-release-asset@v1

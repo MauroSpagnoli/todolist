@@ -1,0 +1,38 @@
+# detekt configuration
+# Archivo base con reglas recomendadas. Ajusta según el estilo del proyecto.
+build:
+  maxIssues: 0 # fallar el build si hay cualquier issue
+
+processors:
+  active: true
+
+config:
+  validation: true
+
+styles:
+  active: true
+
+# Excepciones o inclusiones de archivos
+excludes: "**/build/**,**/resources/**"
+
+# Reglas sencillas de ejemplo
+rules:
+  comments:
+    CommentOverPrivateFunction: true
+
+  exceptions:
+    TooGenericExceptionCaught:
+      active: true
+
+  naming:
+    TopLevelPropertyNaming:
+      active: true
+
+# Reportes (se generarán también por la configuración del plugin en el módulo)
+output:
+  reports:
+    html:
+      enabled: true
+    xml:
+      enabled: true
+

@@ -11,4 +11,27 @@ buildscript {
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
+    // Registrar el plugin de Detekt para poder aplicarlo en módulos
+    alias(libs.plugins.detekt) apply false
+}
+
+// Configuración común para proyectos que apliquen detekt
+subprojects {
+    // Configuramos Detekt solo si el plugin está aplicado en ese subproyecto
+    plugins.withId("io.gitlab.arturbosch.detekt") {
+        // Añadir el plugin de formateo de detekt (detekt-formatting) como dependencia de plugins
+        // para que las reglas de formato (basadas en ktlint) estén disponibles.
+        dependencies {
+            // versión fija tomada de gradle/libs.versions.toml (detekt = "1.22.0")
+            add("detektPlugins", "io.gitlab.arturbosch.detekt:detekt-formatting:1.22.0")
+        }
+
+        detekt {
+            // Usar nuestro fichero de configuración en la raíz (si existe)
+            config = files("${rootDir}/detekt.yml")
+            buildUponDefaultConfig = true
+            // Fail the build on detekt issues (puedes cambiar a true si quieres solo advertencias)
+            ignoreFailures = false
+        }
+    }
 }
