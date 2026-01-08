@@ -1,4 +1,5 @@
 [versions]
+core = "1.5.0"
 hilt-android = "2.48"
 hilt-compiler = "2.48"
 hilt-navigation-compose = "1.0.0"
@@ -19,15 +20,18 @@ espresso-core = "3.5.1"
 junit-ext = "1.1.5"
 mockk = "1.13.5"
 navigation-compose = "2.6.0"
+robolectric = "4.16"
 room-runtime = "2.6.1"
 ui-test-junit4 = "1.6.0"
 ui-tooling = "1.6.0"
+ui-tooling-version = "1.5.3"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 
 [libraries]
+androidx-core = { module = "androidx.test:core", version.ref = "core" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
@@ -37,6 +41,7 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-runtime" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-runtime" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-runtime" }
+androidx-ui-tooling-v153 = { module = "androidx.compose.ui:ui-tooling", version.ref = "ui-tooling-version" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt-android" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt-compiler" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
@@ -56,3 +61,4 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }

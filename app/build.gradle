@@ -105,9 +105,9 @@ dependencies {
     // Añadimos robolectric y las librerías de testing de Compose para poder
     // ejecutar tests de UI en la JVM (src/test). Habilitamos también
     // androidx.test:core para compatibilidad.
-    testImplementation "org.robolectric:robolectric:4.16"
-    testImplementation "androidx.test:core:1.5.0"
-    testImplementation "androidx.compose.ui:ui-test-junit4:1.5.3"
-    testImplementation "androidx.compose.ui:ui-tooling:1.5.3"
+    testImplementation libs.robolectric
+    testImplementation libs.androidx.core
+    testImplementation libs.androidx.ui.test.junit4
+    testImplementation libs.androidx.ui.tooling.v153
     // ----------------------------------------------------------------
 }
