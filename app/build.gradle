@@ -119,6 +119,8 @@ detekt {
     // Usa el archivo detekt.yml en la raíz (configurado en build.gradle raíz también)
     config = files("${rootDir}/detekt.yml")
     buildUponDefaultConfig = true
+    // Evitar analizar los directorios generados/build
+    excludes = "**/build/**,**/generated/**"
     reports {
         html {
             enabled = true

@@ -1,5 +1,9 @@
-# detekt configuration
+# detekt configuration (v1.22.x)
 # Archivo base con reglas recomendadas. Ajusta según el estilo del proyecto.
+# Notas:
+# - Evitar claves inválidas en la raíz (por ejemplo: `rules`, `styles`, `excludes`, `output`).
+# - Habilitamos `formatting` para que las reglas del plugin detekt-formatting se apliquen.
+
 build:
   maxIssues: 0 # fallar el build si hay cualquier issue
 
@@ -9,30 +13,24 @@ processors:
 config:
   validation: true
 
-styles:
+# Activar el conjunto de reglas de formato (detekt-formatting)
+formatting:
   active: true
 
-# Excepciones o inclusiones de archivos
-excludes: "**/build/**,**/resources/**"
+# Reglas comunes y ejemplos. A continuación se muestran propiedades de reglas
+# directamente en la raíz (no dentro de un bloque `rules:` que no existe).
+comments:
+  active: true
+  CommentOverPrivateFunction:
+    active: true
 
-# Reglas sencillas de ejemplo
-rules:
-  comments:
-    CommentOverPrivateFunction: true
+exceptions:
+  TooGenericExceptionCaught:
+    active: true
 
-  exceptions:
-    TooGenericExceptionCaught:
-      active: true
+naming:
+  TopLevelPropertyNaming:
+    active: true
 
-  naming:
-    TopLevelPropertyNaming:
-      active: true
-
-# Reportes (se generarán también por la configuración del plugin en el módulo)
-output:
-  reports:
-    html:
-      enabled: true
-    xml:
-      enabled: true
-
+# Añade o ajusta reglas según tus necesidades.
+# Para ignorar rutas usa la configuración del plugin Gradle (p. ej. `detekt { excludes = "**/build/**" }`) o un archivo .detekt-ignore si lo prefieres.
