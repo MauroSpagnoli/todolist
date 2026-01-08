@@ -9,30 +9,23 @@ processors:
 config:
   validation: true
 
-styles:
+style:
   active: true
 
-# Excepciones o inclusiones de archivos
-excludes: "**/build/**,**/resources/**"
+# Nota: Las exclusiones de ficheros (por ejemplo **/*.class) se recomiendan configurar
+# en el bloque `detekt` del build.gradle (o mediante filtros del plugin), no en el YAML.
 
-# Reglas sencillas de ejemplo
-rules:
-  comments:
-    CommentOverPrivateFunction: true
+# Reglas sencillas de ejemplo (los rule sets van al nivel superior, no bajo `rules:`)
+comments:
+  CommentOverPrivateFunction:
+    active: true
 
-  exceptions:
-    TooGenericExceptionCaught:
-      active: true
+exceptions:
+  TooGenericExceptionCaught:
+    active: true
 
-  naming:
-    TopLevelPropertyNaming:
-      active: true
+naming:
+  TopLevelPropertyNaming:
+    active: true
 
-# Reportes (se generarán también por la configuración del plugin en el módulo)
-output:
-  reports:
-    html:
-      enabled: true
-    xml:
-      enabled: true
-
+# Los reportes se definen en el bloque `detekt` del build.gradle (por ejemplo en app/build.gradle)

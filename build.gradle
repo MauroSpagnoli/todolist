@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "com.google.dagger:hilt-android-gradle-plugin:2.48"
+        classpath libs.hilt.android.gradle.plugin
     }
 }
 
@@ -32,6 +32,23 @@ subprojects {
             buildUponDefaultConfig = true
             // Fail the build on detekt issues (puedes cambiar a true si quieres solo advertencias)
             ignoreFailures = false
+        }
+
+        // Excluir archivos .class y directorios build/resources en las tareas Detekt.
+        // La extensión `detekt` no expone `filters` en esta versión del plugin, así que
+        // configuramos las tareas registradas por el plugin.
+        tasks.withType(io.gitlab.arturbosch.detekt.Detekt).configureEach {
+            // patrones de exclusión (glob-style)
+            exclude '**/*.class'
+            exclude '**/build/**'
+            exclude '**/resources/**'
+            // Excluir contenidos generados y intermediarios dentro de build
+            exclude '**/build/generated/**'
+            exclude '**/build/classes/**'
+            exclude '**/build/intermediates/**'
+            exclude '**/build/tmp/**'
+            exclude '**/build/**/kotlin/**'
+            exclude '**/build/**/generated/**'
         }
     }
 }
