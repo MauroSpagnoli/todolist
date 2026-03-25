@@ -1,149 +1,358 @@
-# TodoList
+# TodoList App
 
-Aplicación de ejemplo ToDo construida con arquitectura limpia (Clean Architecture), Room, Hilt y Jetpack Compose.
+A modern Android todo list application built with **Clean Architecture**, **Room**, **Hilt**, and **Jetpack Compose**. This app demonstrates best practices in Android development including proper separation of concerns, dependency injection, and reactive programming patterns.
 
-Este README resume la estructura del proyecto, cómo compilarlo y ejecutar, decisiones arquitectónicas y pasos útiles para contribuir.
+## 📱 What does this app do?
 
----
+TodoList is a task management application that allows users to:
 
-## Resumen
+- **Create tasks**: Add new todo items with custom titles and descriptions
+- **Mark as complete**: Toggle tasks between completed and pending states
+- **Edit tasks**: Update existing todo items with new information
+- **Delete tasks**: Remove unwanted tasks from the list
+- **Persistent storage**: All data is saved locally using Room database
+- **Real-time updates**: UI automatically updates when data changes using Flow and StateFlow
+- **Material Design**: Modern UI following Material Design 3 guidelines
 
-- Nombre: TodoList
-- Lenguaje: Kotlin
-- Plataforma: Android (Compose)
-- Arquitectura: Clean Architecture (capas: domain, data, ui)
-- Dependencias destacadas: Room, Hilt, Kotlin Coroutines, Jetpack Compose
+### Key Features
 
----
-
-## Estructura principal del proyecto
-
-- `app/src/main/java/msh/todolist/domain`  
-  Contiene la capa de dominio: modelos (`domain.model`), contratos (interfaces de repositorio en `domain.repository`) y casos de uso (`domain.usecases`). Esta capa no depende de la capa `data`.
-
-- `app/src/main/java/msh/todolist/data`  
-  Implementación de la capa de datos: entidades Room (`data.local`), DAOs, mappers y la implementación del repositorio (`data.repository`). Aquí vive `TodoEntity` y `AppDatabase`.
-
-- `app/src/main/java/msh/todolist/ui`  
-  UI en Jetpack Compose y ViewModels. Consume los modelos de dominio (`domain.model.Todo`) a través de UseCases.
-
-- `app/src/main/java/msh/todolist/di`  
-  Módulos de inyección (Hilt): bindings para repositorios, base de datos y dispatchers.
-
-- `app/src/main/res`  
-  Recursos (drawables, layouts, mipmaps, strings, etc.).
+✅ **Add new todos** with title and optional description  
+✅ **Mark todos as completed** with checkbox interaction  
+✅ **Edit existing todos** through dedicated edit screen  
+✅ **Delete todos** with confirmation  
+✅ **Offline-first** - works without internet connection  
+✅ **Real-time sync** between database and UI  
+✅ **Clean, intuitive interface** built with Jetpack Compose  
 
 ---
 
-## Principios y decisiones arquitectónicas
+## 🏗️ Architecture Overview
 
-- Clean Architecture: la capa `domain` declara contratos y use cases; la capa `data` implementa esos contratos y hace mapping entre entidades de persistencia (`TodoEntity`) y modelos de dominio (`Todo`).
-- SOLID: las responsabilidades están separadas (DAO, repositorio, usecases, ViewModel, UI). La inversión de dependencias se satisface mediante interfaces (`ITodoRepository`) y Hilt para la inyección.
-- Concurrencia: se inyecta un `CoroutineDispatcher` calificado (`@IoDispatcher`) para ejecutar operaciones de I/O desde los use cases y mantener testabilidad.
-- Persistencia: Room con `TodoEntity`, `TodoDao` y `AppDatabase`. Los `UseCases` y `ViewModel` consumen `Flow` para reactividad.
+This project follows **Clean Architecture** principles with three distinct layers:
+
+```
+📁 UI Layer (Presentation)
+   ├── Jetpack Compose screens
+   ├── ViewModels with StateFlow
+   └── UI state management
+
+📁 Domain Layer (Business Logic)
+   ├── Use Cases (business rules)
+   ├── Repository interfaces
+   └── Domain models (Todo)
+
+📁 Data Layer (Infrastructure)
+   ├── Room database implementation
+   ├── Data entities (TodoEntity)
+   └── Repository implementation
+```
+
+### Why Clean Architecture?
+
+- **Separation of Concerns**: Each layer has a single responsibility
+- **Testability**: Easy to unit test business logic independently
+- **Maintainability**: Changes in one layer don't affect others
+- **Scalability**: Easy to add new features and data sources
 
 ---
 
-## Cómo compilar y ejecutar
+## 🛠️ Tech Stack
 
-Requisitos previos:
-- JDK 11 (o compatible con la configuración del proyecto)
-- Android SDK (según `compileSdk` del proyecto, en este repo es 34)
-- Android Studio recomendado
+| Component | Technology | Purpose |
+|-----------|------------|---------|
+| **UI** | Jetpack Compose | Modern declarative UI framework |
+| **Architecture** | MVVM + Clean Architecture | Separation of concerns |
+| **Database** | Room | Local SQLite database with type safety |
+| **Dependency Injection** | Hilt | Compile-time dependency injection |
+| **Async** | Kotlin Coroutines + Flow | Reactive programming |
+| **Language** | Kotlin | Modern Android development language |
 
-Desde Windows (cmd.exe) en la raíz del proyecto:
+---
+
+## 📂 Project Structure
+
+```
+app/src/main/java/msh/todolist/
+├── 🎯 domain/                 # Business logic layer
+│   ├── model/                 # Domain models (Todo)
+│   ├── repository/            # Repository contracts  
+│   └── usecases/             # Business use cases
+│       └── todo/             # Todo-specific use cases
+├── 💾 data/                  # Data access layer  
+│   ├── local/                # Room database components
+│   │   ├── TodoEntity.kt     # Database entity
+│   │   ├── TodoDao.kt        # Data access object
+│   │   └── AppDatabase.kt    # Room database
+│   └── repository/           # Repository implementations
+├── 🎨 ui/                    # Presentation layer
+│   ├── components/           # Reusable UI components
+│   ├── screens/              # Screen composables
+│   └── viewmodels/           # ViewModels
+└── 🔧 di/                    # Dependency injection modules
+    ├── DatabaseModule.kt     # Database bindings
+    ├── RepositoryModule.kt   # Repository bindings  
+    └── DispatcherModule.kt   # Coroutine dispatchers
+```
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **JDK 11** or higher
+- **Android SDK** (API level 34)
+- **Android Studio** (recommended IDE)
+
+### Building the Project
+
+From the project root directory (Windows cmd.exe):
 
 ```cmd
-:: Limpiar
+:: Clean the project
 .\gradlew.bat clean
 
-:: Compilar
+:: Build debug APK
 .\gradlew.bat :app:assembleDebug
 
-:: Instalar en un emulador/dispositivo conectado
+:: Install on connected device/emulator
 .\gradlew.bat :app:installDebug
 ```
 
-Para correr tests unitarios:
+### Running Tests
 
 ```cmd
+:: Run unit tests
 .\gradlew.bat test
-```
 
-Para ejecutar lint (informes de calidad):
-
-```cmd
+:: Run lint checks
 .\gradlew.bat :app:lintDebug
+
+:: Run all checks
+.\gradlew.bat check
 ```
 
 ---
 
-## Cómo está organizado el DI (Hilt)
+## 🧩 Dependency Injection (Hilt)
 
-- `di/RepositoryModule.kt`: enlaza la implementación concreta `msh.todolist.data.repository.TodoRepository` con el contrato `msh.todolist.domain.repository.ITodoRepository`.
-- `di/DatabaseModule.kt`: provee la instancia de `AppDatabase` y `TodoDao` usando `Room.databaseBuilder`.
-- `di/DispatcherModule.kt`: provee el `CoroutineDispatcher` calificado `@IoDispatcher` con `Dispatchers.IO`.
+The app uses **Hilt** for dependency injection with the following modules:
 
-Si necesitas añadir nuevos bindings (por ejemplo, repositorios o data sources), añade un `@Module` con `@InstallIn(SingletonComponent::class)` y proporciona el binding correspondiente.
-
----
-
-## UseCases disponibles
-
-- `GetAllTodosUseCase`: devuelve un `Flow<List<Todo>>` con las tareas.
-- `InsertTodoUseCase`: inserta un `Todo` (se lanza en el dispatcher IO).
-- `UpdateTodoUseCase`: actualiza un `Todo`.
-- `DeleteTodoUseCase`: elimina una tarea por id.
-
-Los use cases están en `msh.todolist.domain.usecases.todo` y se inyectan en los ViewModels.
-
----
-
-## UI y ViewModels
-
-- `TodoListViewModel`: expone `StateFlow<List<Todo>>` con las tareas y métodos para añadir/actualizar/eliminar.
-- Pantallas Compose (`ui/components/todolist`) consumen el ViewModel y muestran la lista, modales de añadir/editar y un snackbar de confirmación.
-
----
-
-## Icono de la aplicación
-
-El adaptive icon se compone de:
-- `res/drawable/ic_launcher_foreground.xml` (vector con la lista y checks)
-- `res/drawable/ic_launcher_background.xml` (shape con color de fondo)
-- Adaptive launchers en `res/mipmap-anydpi-v26/ic_launcher.xml` y `ic_launcher_round.xml` referencian esos drawables.
-
-Si quieres generar PNGs legacy (mipmap-*/) usa Android Studio → New → Image Asset o solicita que los genere automáticamente.
-
----
-
-## Recomendaciones para contribuir
-
-1. Crea una rama a partir de `main` o la rama principal:
-```bash
-git checkout -b feature/mi-cambio
+### DatabaseModule
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+object DatabaseModule {
+    // Provides Room database instance
+    // Provides TodoDao
+}
 ```
-2. Haz cambios pequeños y commits atómicos con mensajes claros.
-3. Antes de abrir PR:
-   - Ejecuta `./gradlew.bat clean assembleDebug` y `./gradlew.bat test`.
-   - Asegúrate de que el código sigue la convención del proyecto y añade pruebas cuando sea posible.
+
+### RepositoryModule  
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class RepositoryModule {
+    // Binds TodoRepository implementation to ITodoRepository interface
+}
+```
+
+### DispatcherModule
+```kotlin
+@Module
+@InstallIn(SingletonComponent::class) 
+object DispatcherModule {
+    // Provides IO dispatcher for database operations
+}
+```
 
 ---
 
-## Problemas comunes y soluciones
+## 📋 Use Cases
 
-- Hilt no encuentra binding: verifica que el módulo esté anotado con `@Module` y `@InstallIn(SingletonComponent::class)` y que la implementación sea `@Inject` o esté provista.
-- Room problemas con migraciones: actualmente la DB está en versión 1; para cambios en entidades, añade migraciones o incrementa la versión y borra la app en desarrollo.
-- Icono no se actualiza: desinstala la app del emulador/dispositivo e instala de nuevo.
+The domain layer contains the following use cases for todo operations:
+
+| Use Case | Purpose | Returns |
+|----------|---------|---------|
+| `GetAllTodosUseCase` | Fetch all todos | `Flow<List<Todo>>` |
+| `InsertTodoUseCase` | Add new todo | `Unit` |  
+| `UpdateTodoUseCase` | Update existing todo | `Unit` |
+| `DeleteTodoUseCase` | Delete todo by ID | `Unit` |
+
+### Example Usage in ViewModel:
+
+```kotlin
+class TodoListViewModel @Inject constructor(
+    private val getAllTodosUseCase: GetAllTodosUseCase,
+    private val insertTodoUseCase: InsertTodoUseCase,
+    // ... other use cases
+) : ViewModel() {
+    
+    val todos: StateFlow<List<Todo>> = getAllTodosUseCase()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+        
+    fun addTodo(title: String, description: String) {
+        viewModelScope.launch {
+            insertTodoUseCase(Todo(title = title, description = description))
+        }
+    }
+}
+```
 
 ---
 
-## Próximos pasos recomendados
+## 🎨 UI Components
 
-- Implementar undo (deshacer) para inserciones: propagar el id insertado desde `InsertTodoUseCase` y mostrar acción "Deshacer" en el snackbar.
-- Añadir tests unitarios para use cases y test instrumentado para `data.repository` con una DB in-memory.
-- (Opcional) separar las capas en módulos Gradle (`:domain`, `:data`, `:app`) para reforzar las dependencias en tiempo de compilación.
+### TodoListScreen
+- **Purpose**: Main screen displaying list of todos
+- **Features**: Add new todo, mark as complete, edit, delete
+- **State**: Observes `StateFlow<List<Todo>>` from ViewModel
+
+### AddEditTodoScreen  
+- **Purpose**: Screen for adding new todos or editing existing ones
+- **Features**: Text inputs for title/description, save/cancel actions
+- **Navigation**: Navigates back to list on save/cancel
+
+### TodoItem
+- **Purpose**: Individual todo item component  
+- **Features**: Checkbox, title/description display, edit/delete actions
+- **Interactions**: Toggle completion, trigger edit/delete
 
 ---
 
+## 💾 Data Layer Details
 
+### TodoEntity (Room Entity)
+```kotlin
+@Entity(tableName = "todos")
+data class TodoEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val title: String,
+    val description: String,
+    val isCompleted: Boolean,
+    val createdAt: Long
+)
+```
+
+### Todo (Domain Model)
+```kotlin  
+data class Todo(
+    val id: Long = 0,
+    val title: String,
+    val description: String,
+    val isCompleted: Boolean = false,
+    val createdAt: Long = System.currentTimeMillis()
+)
+```
+
+### Data Mapping
+The repository layer handles mapping between `TodoEntity` (data) and `Todo` (domain):
+- **From Entity to Domain**: Database → Business logic
+- **From Domain to Entity**: Business logic → Database
+
+---
+
+## 🎯 App Icon
+
+The app uses **Adaptive Icons** with:
+- `ic_launcher_foreground.xml`: Vector drawable with todo list icon
+- `ic_launcher_background.xml`: Solid color background  
+- Supports various device icon shapes (circle, square, rounded square)
+
+---
+
+## 🔧 Development Workflow
+
+### Adding New Features
+
+1. **Create feature branch**:
+   ```bash
+   git checkout -b feature/new-feature-name
+   ```
+
+2. **Follow Clean Architecture layers**:
+   - Add domain models/use cases if needed
+   - Implement data layer changes  
+   - Create/update UI components
+   - Add dependency injection bindings
+
+3. **Test your changes**:
+   ```cmd
+   .\gradlew.bat test
+   .\gradlew.bat :app:lintDebug
+   ```
+
+4. **Commit and push**:
+   ```bash
+   git commit -m "feat: add new feature description"
+   git push origin feature/new-feature-name
+   ```
+
+### Code Style Guidelines
+
+- Follow **Kotlin coding conventions**
+- Use **meaningful variable/function names**  
+- Add **KDoc comments** for public APIs
+- Keep functions **small and focused**
+- Prefer **composition over inheritance**
+
+---
+
+## 🐛 Common Issues & Solutions
+
+### Hilt Issues
+**Problem**: `@Inject` constructor not found  
+**Solution**: Ensure the class has `@Inject` constructor and proper module bindings
+
+### Room Issues  
+**Problem**: Database migration errors  
+**Solution**: For development, uninstall app or increment database version
+
+### Build Issues
+**Problem**: Gradle sync failures  
+**Solution**: Clean project and invalidate caches in Android Studio
+
+---
+
+## 🚀 Future Enhancements
+
+### Planned Features
+- [ ] **Undo functionality** for delete operations
+- [ ] **Categories/Tags** for organizing todos  
+- [ ] **Due dates** with notifications
+- [ ] **Search and filter** capabilities
+- [ ] **Export/Import** todo lists
+- [ ] **Dark theme** support
+- [ ] **Widgets** for home screen
+
+### Technical Improvements  
+- [ ] **Multi-module architecture** (`:domain`, `:data`, `:app`)
+- [ ] **Comprehensive unit tests** for all layers
+- [ ] **UI tests** with Compose testing framework
+- [ ] **CI/CD pipeline** with GitHub Actions
+- [ ] **Performance monitoring** with Firebase Performance
+
+---
+
+## 📄 License
+
+This project is for educational purposes and demonstrates modern Android development practices.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Fork the repository
+2. Create a feature branch  
+3. Make your changes following the code style
+4. Add tests for new functionality
+5. Submit a pull request with clear description
+
+For questions or suggestions, please open an issue on GitHub.
+
+---
+
+**Built with ❤️ using Android modern development stack**
