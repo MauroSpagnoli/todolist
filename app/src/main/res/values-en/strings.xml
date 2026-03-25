@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TodoList</string>
+    <string name="pendientes">Pending</string>
+    <string name="completados">Completed</string>
+    <string name="eliminar">Delete</string>
+    <string name="editar">Edit</string>
+    <string name="mas_opciones">More options</string>
+
+    <!-- Settings strings -->
+    <string name="ajustes">Settings</string>
+    <string name="idioma">Language</string>
+    <string name="seleccionar_idioma">Select Language</string>
+    <string name="espanol">Spanish</string>
+    <string name="ingles">English</string>
+
+    <!-- Todo list strings -->
+    <string name="nueva_tarea">New Task</string>
+    <string name="titulo">Title</string>
+    <string name="descripcion">Description</string>
+    <string name="guardar">Save</string>
+    <string name="cancelar">Cancel</string>
+    <string name="tareas">Tasks</string>
+
+    <!-- Empty state strings -->
+    <string name="no_hay_tareas_pendientes">No pending tasks</string>
+    <string name="no_hay_tareas_completadas">No completed tasks</string>
+</resources>

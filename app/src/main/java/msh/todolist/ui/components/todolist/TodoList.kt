@@ -78,7 +78,12 @@ fun LazyListScope.TodoSection(
 
                 if (items.isEmpty()) {
                     Text(
-                        text = if (titleRes == R.string.pendientes) "No hay tareas pendientes" else "No hay tareas completadas",
+                        text = stringResource(
+                            if (titleRes == R.string.pendientes)
+                                R.string.no_hay_tareas_pendientes
+                            else
+                                R.string.no_hay_tareas_completadas
+                        ),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 } else {

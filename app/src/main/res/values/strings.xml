@@ -5,4 +5,23 @@
     <string name="eliminar">Eliminar</string>
     <string name="editar">Editar</string>
     <string name="mas_opciones">Más opciones</string>
+
+    <!-- Settings strings -->
+    <string name="ajustes">Ajustes</string>
+    <string name="idioma">Idioma</string>
+    <string name="seleccionar_idioma">Seleccionar idioma</string>
+    <string name="espanol">Español</string>
+    <string name="ingles">Inglés</string>
+
+    <!-- Todo list strings -->
+    <string name="nueva_tarea">Nueva tarea</string>
+    <string name="titulo">Título</string>
+    <string name="descripcion">Descripción</string>
+    <string name="guardar">Guardar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="tareas">Tareas</string>
+
+    <!-- Empty state strings -->
+    <string name="no_hay_tareas_pendientes">No hay tareas pendientes</string>
+    <string name="no_hay_tareas_completadas">No hay tareas completadas</string>
 </resources>
